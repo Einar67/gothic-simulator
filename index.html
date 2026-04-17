@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Gothic Vampire Simulator</title>
+<style>
+body {
+    margin: 0;
+    font-family: "Georgia", serif;
+    background: black;
+    color: white;
+}
+
+/* Background */
+#game {
+    background: url("https://i.imgur.com/8Km9tLL.jpg");
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Character Display */
+#character {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 150px;
+    text-align: center;
+}
+
+.avatar {
+    width: 200px;
+    height: 300px;
+    border: 2px solid crimson;
+    background: #111;
+    padding: 10px;
+}
+
+/* Dialogue Box */
+#dialogue {
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-top: 2px solid crimson;
+}
+
+#choices button {
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+    background: black;
+    color: crimson;
+    border: 1px solid crimson;
+    cursor: pointer;
+}
+
+/* Customization */
+#customization {
+    padding: 20px;
+    background: #111;
+}
+select {
+    margin: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="customization">
+    <h2>🩸 Buat Karakter Kamu</h2>
+
+    Gender:
+    <select id="gender">
+        <option>Pria</option>
+        <option>Wanita</option>
+        <option>Non-binary</option>
+    </select>
+
+    Kulit:
+    <select id="skin">
+        <option>Pucat Vampir</option>
+        <option>Abu Gothic</option>
+        <option>Porselen</option>
+    </select>
+
+    Rambut:
+    <select id="hair">
+        <option>Hitam Panjang</option>
+        <option>Putih Silver</option>
+        <option>Merah Gelap</option>
+    </select>
+
+    Pakaian:
+    <select id="outfit">
+        <option>Gothic Lolita</option>
+        <option>Emo Dark</option>
+        <option>Royal Vampire</option>
+    </select>
+
+    Aksesoris:
+    <select id="accessory">
+        <option>Choker</option>
+        <option>Cincin Tengkorak</option>
+        <option>Mahkota Gelap</option>
+    </select>
+
+    <br><br>
+    <button onclick="startGame()">Mulai Game</button>
+</div>
+
+<div id="game" style="display:none;">
+    <div id="character">
+        <div class="avatar" id="avatar"></div>
+        <p id="charInfo"></p>
+    </div>
+
+    <div id="dialogue">
+        <p id="text"></p>
+        <div id="choices"></div>
+    </div>
+</div>
+
+<script>
+let player = {};
+
+function startGame() {
+    player.gender = document.getElementById("gender").value;
+    player.skin = document.getElementById("skin").value;
+    player.hair = document.getElementById("hair").value;
+    player.outfit = document.getElementById("outfit").value;
+    player.accessory = document.getElementById("accessory").value;
+
+    document.getElementById("customization").style.display = "none";
+    document.getElementById("game").style.display = "flex";
+
+    updateAvatar();
+    introScene();
+}
+
+function updateAvatar() {
+    document.getElementById("avatar").innerHTML =
+        `<p>${player.gender}</p>
+         <p>${player.skin}</p>
+         <p>${player.hair}</p>
+         <p>${player.outfit}</p>
+         <p>${player.accessory}</p>`;
+
+    document.getElementById("charInfo").innerText = "Karakter Kamu";
+}
+
+function introScene() {
+    setText("Malam gelap menyelimuti kastil tua... Kamu terbangun sebagai vampir baru.");
+
+    setChoices([
+        { text: "Jelajahi kastil", action: meetKing },
+        { text: "Lihat cermin", action: mirrorScene }
+    ]);
+}
+
+function mirrorScene() {
+    setText("Kamu menatap dirimu... kecantikan gelapmu memikat bahkan roh malam.");
+
+    setChoices([
+        { text: "Pergi ke aula utama", action: meetKing }
+    ]);
+}
+
+function meetKing() {
+    document.getElementById("avatar").innerHTML += "<hr><p>🧛 Raja Vampir</p>";
+
+    setText("Seorang pria misterius muncul... Dia adalah Raja Vampir.\n'Aku telah menunggumu...'");
+
+    setChoices([
+        { text: "Siapa kamu?", action: kingReveal },
+        { text: "Tatap dia diam-diam", action: romanticScene }
+    ]);
+}
+
+function kingReveal() {
+    setText("'Aku adalah penguasa malam... dan entah kenapa, aku tertarik padamu.'");
+
+    setChoices([
+        { text: "Aku juga merasakan sesuatu...", action: romanticScene },
+        { text: "Aku tidak percaya padamu", action: badEnd }
+    ]);
+}
+
+function romanticScene() {
+    setText("Dia mendekat perlahan... matanya bersinar merah.\n'Cinta kita akan abadi dalam kegelapan.'");
+
+    setChoices([
+        { text: "Terima cintanya", action: goodEnd },
+        { text: "Ragu...", action: badEnd }
+    ]);
+}
+
+function goodEnd() {
+    setText("✨ GOOD ENDING: Kamu menjadi Ratu Vampir di sisi Raja.");
+    setChoices([]);
+}
+
+function badEnd() {
+    setText("💀 BAD ENDING: Kamu menghilang dalam kegelapan abadi.");
+    setChoices([]);
+}
+
+function setText(t) {
+    document.getElementById("text").innerText = t;
+}
+
+function setChoices(choices) {
+    let container = document.getElementById("choices");
+    container.innerHTML = "";
+
+    choices.forEach(choice => {
+        let btn = document.createElement("button");
+        btn.innerText = choice.text;
+        btn.onclick = choice.action;
+        container.appendChild(btn);
+    });
+}
+</script>
+
+</body>
+</html>
